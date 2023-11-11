@@ -28,9 +28,7 @@ function App() {
         fetch('https://rickandmortyapi.com/api/character').then((res) =>
           res.json()
         ),
-      ]).then((data) => {
-        const [pokemon, starwars, rickandmorty] = data;
-
+      ]).then(([pokemon, starwars, rickandmorty]) => {
         // setPokemonData(pokemon.results);
         // setStarwarsData(starwars.results);
         // setRickandmortyData(rickandmorty.results);
@@ -75,7 +73,7 @@ function App() {
 
   return (
     <div>
-      <h1>Hello from App! 👋</h1>
+      <h1>My Favorite Characters! 👋</h1>
       <div style={{ display: 'flex' }}>
         <ul>
           <h4>Pokemon</h4>
