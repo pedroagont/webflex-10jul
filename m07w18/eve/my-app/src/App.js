@@ -3,20 +3,23 @@ import { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
-  const [loading, setLoading] = useState(false);
-  const [pokemonData, setPokemonData] = useState([]);
-  const [starwarsData, setStarwarsData] = useState([]);
-  const [rickandmortyData, setRickandmortyData] = useState([]);
+  // Mutiple state variables
+  // const [loading, setLoading] = useState(false);
+  // const [pokemonData, setPokemonData] = useState([]);
+  // const [starwarsData, setStarwarsData] = useState([]);
+  // const [rickandmortyData, setRickandmortyData] = useState([]);
 
-  // const [state, setState] = useReducer(reducer, {
-  //   loading: false,
-  //   pokemonData: [],
-  //   starwarsData: [],
-  //   rickandmortyData: [],
-  // });
+  // Single state variable with all properties within an object
+  const [state, setState] = useState({
+    loading: false,
+    pokemonData: [],
+    starwarsData: [],
+    rickandmortyData: [],
+  });
 
   useEffect(() => {
-    setLoading(true);
+    // setLoading(true);
+    setState((prev) => ({ ...prev, loading: true }));
 
     setTimeout(() => {
       Promise.all([
@@ -28,10 +31,18 @@ function App() {
       ]).then((data) => {
         const [pokemon, starwars, rickandmorty] = data;
 
-        setPokemonData(pokemon.results);
-        setStarwarsData(starwars.results);
-        setRickandmortyData(rickandmorty.results);
-        setLoading(false);
+        // setPokemonData(pokemon.results);
+        // setStarwarsData(starwars.results);
+        // setRickandmortyData(rickandmorty.results);
+        // setLoading(false);
+
+        setState((prev) => ({
+          ...prev,
+          pokemonData: pokemon.results,
+          starwarsData: starwars.results,
+          rickandmortyData: rickandmorty.results,
+          loading: false,
+        }));
 
         localStorage.setItem('visited', true);
       });
@@ -40,9 +51,15 @@ function App() {
 
   useEffect(() => {
     const charactersLength =
-      pokemonData.length + starwarsData.length + rickandmortyData.length;
+      state.pokemonData.length +
+      state.starwarsData.length +
+      state.rickandmortyData.length;
     document.title = `${charactersLength} characters found!`;
-  }, [pokemonData.length || starwarsData.length || rickandmortyData.length]);
+  }, [
+    state.pokemonData.length,
+    state.starwarsData.length,
+    state.rickandmortyData.length,
+  ]);
 
   useEffect(() => {
     const visited = localStorage.getItem('visited');
@@ -52,30 +69,35 @@ function App() {
     }
   }, []);
 
-  if (loading) {
+  if (state.loading) {
     return <h1>Loading...</h1>;
   }
 
   return (
     <div>
       <h1>Hello from App! 👋</h1>
-      <ul>
-        {pokemonData.map((item) => (
-          <li key={item.name}>{item.name}</li>
-        ))}
-      </ul>
+      <div style={{ display: 'flex' }}>
+        <ul>
+          <h4>Pokemon</h4>
+          {state.pokemonData.map((item) => (
+            <li key={item.name}>{item.name}</li>
+          ))}
+        </ul>
 
-      <ul>
-        {starwarsData.map((item) => (
-          <li key={item.name}>{item.name}</li>
-        ))}
-      </ul>
+        <ul>
+          <h4>Star Wars</h4>
+          {state.starwarsData.map((item) => (
+            <li key={item.name}>{item.name}</li>
+          ))}
+        </ul>
 
-      <ul>
-        {rickandmortyData.map((item) => (
-          <li key={item.name}>{item.name}</li>
-        ))}
-      </ul>
+        <ul>
+          <h4>Rick And Morty</h4>
+          {state.rickandmortyData.map((item) => (
+            <li key={item.name}>{item.name}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
